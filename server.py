@@ -44,4 +44,4 @@ async def do_smuggler(url: str, smuggler_args: List[str] | None = None) -> str:
 if __name__ == "__main__":
     host = os.getenv("HOST", "0.0.0.0")
     port = int(os.getenv("PORT", "8000"))
-    mcp.run(transport="sse", host=host, port=port, path="/mcp")
+    mcp.run(transport="http", host=host, port=port, path="/mcp")

@@ -19,19 +19,13 @@ async def do_smuggler(url: str, smuggler_args: List[str] | None = None) -> str:
     Args:
         url: Target URL to scan (e.g. https://example.com)
         smuggler_args: Additional arguments passed directly to Smuggler
-            Examples:
-              -m GET      -> specify HTTP method
-              -v host.com -> virtual host
-              -x          -> exit on first finding
-              -t 10       -> set socket timeout
     Returns:
         Combined stdout/stderr output from Smuggler with ANSI codes stripped.
     """
     args = smuggler_args or []
 
-    # Prefer installed console script; fallback to module invocation
-    base_cmd = ["smuggler", "-u", url]
-    cmd = base_cmd + args
+    smuggler_path = os.getenv("SMUGGLER_PATH", "/opt/smuggler/smuggler.py")
+    cmd = ["python3", smuggler_path, "-u", url, *args]
 
     process = await asyncio.create_subprocess_exec(
         *cmd,
@@ -44,7 +38,6 @@ async def do_smuggler(url: str, smuggler_args: List[str] | None = None) -> str:
 
     cleaned = strip_ansi(output)
 
-    # Non-zero exit still returns output for debugging
     return cleaned
 
 
